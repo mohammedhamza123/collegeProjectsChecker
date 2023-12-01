@@ -16,7 +16,13 @@ class MessegeViewSet(ModelViewSet):
     queryset = Messege.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.queryset.filter(Channel=int(request.query_params["channel"][0]))
+        try:
+            channel = int(request.query_params["channel"][0])
+        except Exception:
+            queryset = []
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        queryset = self.queryset.filter(Channel=channel)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
