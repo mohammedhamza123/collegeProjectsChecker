@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.schemas import get_schema_view
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -37,13 +38,15 @@ from api.views import (
     RequirementViewSet,
 )
 
+from chat.views import MessegeViewSet, ChannelViewSet
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("register/", RegisterView.as_view(), name="registeration"),
-    # path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(
         "api/schema/swagger-ui/",
@@ -65,4 +68,6 @@ router.register(r"project", ProjectViewSet, basename="project")
 router.register(r"importantDate", ImportantDateViewSet, basename="importantDate")
 router.register(r"requirement", RequirementViewSet, basename="requirement")
 router.register(r"suggestion", SuggestionViewSet, basename="suggestion")
+router.register(r"messeges", MessegeViewSet, basename="messege")
+router.register(r"channel", ChannelViewSet, basename="channel")
 urlpatterns += router.urls

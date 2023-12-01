@@ -24,12 +24,12 @@ class Suggestion(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
-    phoneNumber = models.IntegerField(max_length=10)  # 0914210840
+    phoneNumber = models.IntegerField()  # 0914210840
 
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phoneNumber = models.IntegerField(max_length=10)  # 0914210840
+    phoneNumber = models.IntegerField()  # 0914210840
 
 
 class ImportantDate(models.Model):
