@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # global Apps
     "rest_framework",
-    "widget_tweaks",
+    # "widget_tweaks",
     "rest_framework.authtoken",
     "drf_spectacular",
     # local Apps
