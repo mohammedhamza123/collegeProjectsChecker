@@ -8,7 +8,7 @@ from django.contrib.auth.password_validation import validate_password
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "first_name", "last_name"]
+        fields = ["id", "username", "first_name", "last_name","groups"]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -30,6 +30,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "email",
             "first_name",
             "last_name",
+            "groups"
         )
         extra_kwargs = {
             "first_name": {"required": True},
