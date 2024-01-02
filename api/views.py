@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
@@ -59,8 +59,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
+        # queryset = self.filter_queryset(self.get_queryset())
+        student = get_object_or_404(Student, user=request.user)
+        project = student.project
+        queryset = self.queryset.filter(id=project.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -80,8 +82,8 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
+        # queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.queryset.filter(student=request.user.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -101,8 +103,10 @@ class RequirementViewSet(viewsets.ModelViewSet):
     queryset = Requirement.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
+        # queryset = self.filter_queryset(self.get_queryset())
+        student = get_object_or_404(Student, user=request.user)
+        project = student.project
+        queryset = self.queryset.filter(project=project.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -122,8 +126,10 @@ class SuggestionViewSet(viewsets.ModelViewSet):
     queryset = Suggestion.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
+        # queryset = self.filter_queryset(self.get_queryset())
+        student = get_object_or_404(Student, user=request.user)
+        project = student.project
+        queryset = self.queryset.filter(project=project.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
