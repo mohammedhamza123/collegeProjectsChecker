@@ -19,6 +19,8 @@ class Suggestion(models.Model):
     # settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     status = models.CharField(max_length=2, null=True, choices=STATUSES, default="E")
+    title = models.CharField(max_length=50)
+    image = models.CharField(max_length=200)
 
 
 class Student(models.Model):
