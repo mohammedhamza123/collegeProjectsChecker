@@ -34,7 +34,7 @@ class Student(models.Model):
     phoneNumber = models.IntegerField()  # 0914210840
 
     def __str__(self) -> str:
-        return self.user.name
+        return self.user.username
 
 
 class Teacher(models.Model):
@@ -42,7 +42,7 @@ class Teacher(models.Model):
     phoneNumber = models.IntegerField()  # 0914210840
 
     def __str__(self) -> str:
-        return self.user.name
+        return self.user.username
 
 
 class ImportantDate(models.Model):
