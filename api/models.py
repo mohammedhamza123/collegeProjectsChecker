@@ -8,6 +8,8 @@ class Project(models.Model):
     image = models.CharField(max_length=200)
     progression = models.FloatField()
 
+    def __str__(self) -> str:
+        return self.title
 
 class Suggestion(models.Model):
     STATUSES = (
@@ -22,16 +24,25 @@ class Suggestion(models.Model):
     title = models.CharField(max_length=50)
     image = models.CharField(max_length=200)
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     phoneNumber = models.IntegerField()  # 0914210840
 
+    def __str__(self) -> str:
+        return self.user.name
+
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phoneNumber = models.IntegerField()  # 0914210840
+
+    def __str__(self) -> str:
+        return self.user.name
 
 
 class ImportantDate(models.Model):
@@ -40,6 +51,9 @@ class ImportantDate(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     date_type = models.CharField(max_length=30)
     date = models.DateField()
+
+    def __str__(self) -> str:
+        return f"{self.teacher}"
 
 
 class Requirement(models.Model):
