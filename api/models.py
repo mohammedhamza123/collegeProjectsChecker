@@ -18,14 +18,14 @@ class Suggestion(models.Model):
     content = models.TextField()
     # settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    status = models.CharField(max_length=2, null=True, choices=STATUSES, default="E")
+    status = models.CharField(max_length=2, null=True, choices=STATUSES, default="w")
     title = models.CharField(max_length=50)
     image = models.CharField(max_length=200)
 
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    project = models.OneToOneField(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     phoneNumber = models.IntegerField()  # 0914210840
 
 
