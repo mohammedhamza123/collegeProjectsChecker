@@ -38,7 +38,7 @@ class MyAccountView(ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
-    def List(self,request):
+    def get(self,request):
         user_id = request.user.id
         user = self.queryset.filter(id=user_id)
         serializer = UserSerializer(user, many=True)
