@@ -28,7 +28,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from login.views import UserViewSet, RegisterView
+from login.views import UserViewSet, RegisterView ,MyAccountView
 from api.views import (
     StudentViewSet,
     TeacherViewSet,
@@ -46,6 +46,7 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("register/", RegisterView.as_view(), name="registeration"),
+    path("myaccount/", MyAccountView.as_view(), name="myAccount"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(

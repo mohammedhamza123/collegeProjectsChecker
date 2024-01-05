@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
-from rest_framework import generics
+from rest_framework.generics import CreateAPIView ,ListAPIView
 from rest_framework.views import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import UserSerializer, RegisterSerializer
@@ -27,7 +27,21 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response({"datum": serializer.data})
 
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(CreateAPIView):
     queryset = get_user_model().objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+
+
+class MyAccountView(ListAPIView):
+    queryset = get_user_model().objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = UserSerializer
+
+    def List(self,request):
+        user_id = request.user.id
+        user = self.queryset.filter(id=user_id)
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+
+
