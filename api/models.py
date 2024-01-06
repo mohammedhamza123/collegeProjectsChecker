@@ -58,4 +58,4 @@ class ImportantDate(models.Model):
 
 class Requirement(models.Model):
     name = models.CharField(max_length=40)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    suggestion = models.ForeignKey(Suggestion, on_delete=models.CASCADE)

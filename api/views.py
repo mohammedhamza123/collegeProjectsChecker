@@ -104,9 +104,16 @@ class RequirementViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # queryset = self.filter_queryset(self.get_queryset())
-        student = get_object_or_404(Student, user=request.user)
-        project = student.project
-        queryset = self.queryset.filter(project=project.id)
+        if not request.query_params:
+            student = get_object_or_404(Student, user=request.user)
+            project = student.project
+            suggestion = Suggestion.objects.get(project=project.id).id
+        else:
+            try:
+                suggestion = int(request.query_params.get("suggestion"))        
+            except:
+                return Response(status=404,data={"details":"incorrect query parameters"})
+        queryset = self.queryset.filter(suggestion=suggestion)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
