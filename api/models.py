@@ -17,7 +17,13 @@ class Project(models.Model):
     delivery_date = models.DateField(null=True, blank=True)
 
     def calculate_progression(self):
-        total_requirements = Requirement.objects.filter(suggestion=self.main_suggestion).count()
+        if not self.main_suggestion:
+            suggestionList = Suggestion.objects.filter(project=self.id, status="a")
+            if suggestionList.count > 0:
+                self.main_suggestion = suggestionList.first()
+        total_requirements = Requirement.objects.filter(
+            suggestion=self.main_suggestion
+        ).count()
         completed_requirements = Requirement.objects.filter(
             status="c", suggestion=self.main_suggestion
         ).count()
