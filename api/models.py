@@ -19,7 +19,7 @@ class Project(models.Model):
     def calculate_progression(self):
         if not self.main_suggestion:
             suggestionList = Suggestion.objects.filter(project=self.id, status="a")
-            if suggestionList.count > 0:
+            if suggestionList.count() > 0:
                 self.main_suggestion = suggestionList.first()
         total_requirements = Requirement.objects.filter(
             suggestion=self.main_suggestion
@@ -31,7 +31,7 @@ class Project(models.Model):
             self.progression = (completed_requirements / total_requirements) * 100
         else:
             self.progression = 0
-
+        self.save()
         return self.progression
 
     def __str__(self) -> str:
