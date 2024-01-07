@@ -83,7 +83,8 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # queryset = self.filter_queryset(self.get_queryset())
-        queryset = self.queryset.filter(student=request.user.id)
+        student = Student.objects.get(user=request.user.id)
+        queryset = self.queryset.filter(project=student.project)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
