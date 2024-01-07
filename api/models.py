@@ -7,9 +7,18 @@ class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
     progression = models.FloatField()
+    main_suggestion = models.OneToOneField(
+        "Suggestion",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="project_main_suggestion",
+    )
+    delivery_date = models.DateField(null=True,blank=True)
 
     def __str__(self) -> str:
         return self.title
+
 
 class Suggestion(models.Model):
     STATUSES = (
@@ -23,6 +32,22 @@ class Suggestion(models.Model):
     status = models.CharField(max_length=2, null=True, choices=STATUSES, default="w")
     title = models.CharField(max_length=50)
     image = models.CharField(max_length=200)
+
+    def save(self, *args, **kwargs):
+        if self.status == "a":
+            # Get the project associated with the suggestion
+            project = self.project
+
+            # Check if there is already a main suggestion for the project
+            if project.main_suggestion and project.main_suggestion != self:
+                # Set the status of the existing main suggestion to "w" (waiting)
+                project.main_suggestion.status = "w"
+                project.main_suggestion.save()
+
+            # Set the main suggestion for the project to the current suggestion
+            project.main_suggestion = self
+
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.title
