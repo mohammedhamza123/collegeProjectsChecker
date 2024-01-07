@@ -70,6 +70,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response({"datum": serializer.data})
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.calculate_progression()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class ImportantDateViewSet(viewsets.ModelViewSet):

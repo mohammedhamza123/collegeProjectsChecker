@@ -14,7 +14,19 @@ class Project(models.Model):
         blank=True,
         related_name="project_main_suggestion",
     )
-    delivery_date = models.DateField(null=True,blank=True)
+    delivery_date = models.DateField(null=True, blank=True)
+
+    def calculate_progression(self):
+        total_requirements = Requirement.objects.filter(suggestion=self.main_suggestion).count()
+        completed_requirements = Requirement.objects.filter(
+            status="c", suggestion=self.main_suggestion
+        ).count()
+        if total_requirements > 0:
+            self.progression = (completed_requirements / total_requirements) * 100
+        else:
+            self.progression = 0
+
+        return self.progression
 
     def __str__(self) -> str:
         return self.title
@@ -89,4 +101,3 @@ class Requirement(models.Model):
         ("i", "incomplete"),
     )
     status = models.CharField(max_length=2, null=True, choices=STATUSES, default="i")
-
