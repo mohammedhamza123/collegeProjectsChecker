@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
+from django.contrib.auth import get_user_model
+
 from .serializers import *
 
 # Create your views here.
@@ -88,9 +90,14 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
-        # queryset = self.filter_queryset(self.get_queryset())
-        student = Student.objects.get(user=request.user.id)
-        queryset = self.queryset.filter(project=student.project)
+        user = get_user_model().objects.get(request.user.id)
+        if user.groups == [2]:
+            student = Student.objects.get(user=user.id)
+            queryset = self.queryset.filter(project=student.project)
+        elif user.groups == [3]:
+            queryset = self.queryset.filter(teacher=user.id)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
