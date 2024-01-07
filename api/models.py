@@ -84,3 +84,9 @@ class ImportantDate(models.Model):
 class Requirement(models.Model):
     name = models.CharField(max_length=40)
     suggestion = models.ForeignKey(Suggestion, on_delete=models.CASCADE)
+    STATUSES = (
+        ("c", "completed"),
+        ("i", "incomplete"),
+    )
+    status = models.CharField(max_length=2, null=True, choices=STATUSES, default="i")
+
