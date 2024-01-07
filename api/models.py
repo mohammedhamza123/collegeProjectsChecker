@@ -17,7 +17,7 @@ class Project(models.Model):
     delivery_date = models.DateField(null=True, blank=True)
 
     def calculate_progression(self):
-        if not self.main_suggestion:
+        if not self.main_suggestion or self.main_suggestion.status == "i":
             suggestionList = Suggestion.objects.filter(project=self.id, status="a")
             if suggestionList.count() > 0:
                 self.main_suggestion = suggestionList.first()
