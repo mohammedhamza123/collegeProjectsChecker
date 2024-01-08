@@ -81,7 +81,7 @@ class Suggestion(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     phoneNumber = models.IntegerField()  # 0914210840
 
     def __str__(self) -> str:
