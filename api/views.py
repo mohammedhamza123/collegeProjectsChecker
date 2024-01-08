@@ -93,10 +93,10 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
         user_group = Group.objects.filter(user = request.user).first()
         if not user_group == None:
             if user_group.name == "student":
-                student = Student.objects.get(user=request.user)
+                student = get_object_or_404(Student,user=request.user)
                 queryset = self.queryset.filter(project=student.project)
             elif user_group.name == "teacher":
-                teacher = Teacher.objects.get(user=request.user)
+                teacher = get_object_or_404(Teacher,user=request.user)
                 queryset = self.queryset.filter(teacher=teacher.id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
@@ -151,9 +151,15 @@ class SuggestionViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # queryset = self.filter_queryset(self.get_queryset())
-        student = get_object_or_404(Student, user=request.user)
-        project = student.project
-        queryset = self.queryset.filter(project=project.id)
+        group_name = Group.objects.filter(user = request.user).first()
+        if group_name == "student":
+            student = get_object_or_404(Student, user=request.user)
+            project = student.project
+            queryset = self.queryset.filter(project=project.id)
+        elif group_name == "teacher":
+            teacher = get_object_or_404(Teacher,user=request.user)
+            project = get_object_or_404(Project,teacher=teacher.id)
+            queryset = self.queryset.filter(project=project.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
