@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
 from .serializers import *
 
@@ -90,7 +90,7 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
-        user = get_user_model().objects.get(request.user)
+        user = User.objects.get(request.user)
         if user.groups == [2]:
             student = Student.objects.get(user=user.id)
             queryset = self.queryset.filter(project=student.project)
