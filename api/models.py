@@ -3,6 +3,13 @@ from django.db import models
 from django.conf import settings
 
 
+class Teacher(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    phoneNumber = models.IntegerField()  # 0914210840
+
+    def __str__(self) -> str:
+        return self.user.username
+
 class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
@@ -15,6 +22,7 @@ class Project(models.Model):
         related_name="project_main_suggestion",
     )
     delivery_date = models.DateField(null=True, blank=True)
+    teacher = models.ForeignKey(Teacher,null=True,blank=True,on_delete=models.DO_NOTHING)
 
     def calculate_progression(self):
         if not self.main_suggestion or self.main_suggestion.status == "i":
@@ -78,15 +86,6 @@ class Student(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
-
-
-class Teacher(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phoneNumber = models.IntegerField()  # 0914210840
-
-    def __str__(self) -> str:
-        return self.user.username
-
 
 class ImportantDate(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
