@@ -90,7 +90,7 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
-        user = get_user_model().objects.get(request.user.id)
+        user = get_user_model().objects.get(request.user)
         if user.groups == [2]:
             student = Student.objects.get(user=user.id)
             queryset = self.queryset.filter(project=student.project)
