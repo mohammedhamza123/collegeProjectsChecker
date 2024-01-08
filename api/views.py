@@ -150,16 +150,13 @@ class SuggestionViewSet(viewsets.ModelViewSet):
     queryset = Suggestion.objects.all()
 
     def list(self, request, *args, **kwargs):
-        # queryset = self.filter_queryset(self.get_queryset())
         group_name = Group.objects.filter(user = request.user).first()
         if group_name == "student":
             student = get_object_or_404(Student, user=request.user)
             project = student.project
             queryset = self.queryset.filter(project=project.id)
-        elif group_name == "teacher":
-            teacher = get_object_or_404(Teacher,user=request.user)
-            project = get_object_or_404(Project,teacher=teacher.id)
-            queryset = self.queryset.filter(project=project.id)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
