@@ -53,7 +53,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
         )
 
-        group = Group.objects.get(id=validated_data["groups"][0])
+        group = Group.objects.get(name=validated_data["groups"][0])
         user.groups.add(group)
         user.set_password(validated_data["password"])
         user.save()
