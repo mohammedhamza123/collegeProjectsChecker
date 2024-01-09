@@ -33,6 +33,7 @@ from api.views import (
     StudentViewSet,
     StudentDetailsViewSet,
     TeacherViewSet,
+    TeacherDetailsViewSet,
     ProjectViewSet,
     SuggestionViewSet,
     ImportantDateViewSet,
@@ -73,4 +74,5 @@ router.register(r"suggestion", SuggestionViewSet, basename="suggestion")
 router.register(r"messeges", MessegeViewSet, basename="messege")
 router.register(r"channel", ChannelViewSet, basename="channel")
 router.register(r"studentDetails", StudentDetailsViewSet, basename="studentDetails")
+router.register(r"teacherDetails", TeacherDetailsViewSet, basename="teacherDetails")
 urlpatterns += router.urls

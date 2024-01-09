@@ -35,6 +35,12 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TeacherDetailsSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # Use the UserSerializer for the related User model
+    class Meta:
+        model = Teacher
+        fields = "__all__"
+
 class ImportantDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImportantDate
