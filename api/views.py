@@ -51,6 +51,27 @@ class StudentViewSet(viewsets.ModelViewSet):
         return Response({"datum": serializer.data})
 
 
+class StudentDetailsViewSet(viewsets.ModelViewSet):
+    """
+    StudentModel View.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = StudentDetailsSerializer
+    queryset = Student.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"datum": serializer.data})
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     """
     ProjectModel View.
@@ -72,7 +93,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response({"datum": serializer.data})
-    
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.calculate_progression()
@@ -90,13 +111,13 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
-        user_group = Group.objects.filter(user = request.user).first()
+        user_group = Group.objects.filter(user=request.user).first()
         if not user_group == None:
             if user_group.name == "student":
-                student = get_object_or_404(Student,user=request.user)
+                student = get_object_or_404(Student, user=request.user)
                 queryset = self.queryset.filter(project=student.project)
             elif user_group.name == "teacher":
-                teacher = get_object_or_404(Teacher,user=request.user)
+                teacher = get_object_or_404(Teacher, user=request.user)
                 queryset = self.queryset.filter(teacher=teacher.id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
@@ -150,7 +171,7 @@ class SuggestionViewSet(viewsets.ModelViewSet):
     queryset = Suggestion.objects.all()
 
     def list(self, request, *args, **kwargs):
-        group_name = Group.objects.filter(user = request.user).first()
+        group_name = Group.objects.filter(user=request.user).first()
         if group_name == "student":
             student = get_object_or_404(Student, user=request.user)
             project = student.project

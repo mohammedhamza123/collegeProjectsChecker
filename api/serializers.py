@@ -1,4 +1,5 @@
 from .models import *
+from login.serializers import UserSerializer
 from rest_framework import serializers
 
 
@@ -12,6 +13,14 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = "__all__"
+
+
+class StudentDetailsSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # Use the UserSerializer for the related User model
+
+    class Meta:
+        model = Student
+        fields = "__all__"  # Add the desired fields
 
 
 class SuggestionSerializer(serializers.ModelSerializer):

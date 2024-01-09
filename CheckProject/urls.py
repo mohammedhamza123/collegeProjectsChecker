@@ -28,9 +28,10 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from login.views import UserViewSet, RegisterView ,MyAccountView
+from login.views import UserViewSet, RegisterView, MyAccountView
 from api.views import (
     StudentViewSet,
+    StudentDetailsViewSet,
     TeacherViewSet,
     ProjectViewSet,
     SuggestionViewSet,
@@ -71,4 +72,5 @@ router.register(r"requirement", RequirementViewSet, basename="requirement")
 router.register(r"suggestion", SuggestionViewSet, basename="suggestion")
 router.register(r"messeges", MessegeViewSet, basename="messege")
 router.register(r"channel", ChannelViewSet, basename="channel")
+router.register(r"studentDetails", StudentDetailsViewSet, basename="studentDetails")
 urlpatterns += router.urls
