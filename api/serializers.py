@@ -37,9 +37,11 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 class TeacherDetailsSerializer(serializers.ModelSerializer):
     user = UserSerializer()  # Use the UserSerializer for the related User model
+
     class Meta:
         model = Teacher
         fields = "__all__"
+
 
 class ImportantDateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,4 +52,13 @@ class ImportantDateSerializer(serializers.ModelSerializer):
 class RequirementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requirement
+        fields = "__all__"
+
+
+class ProjectDetailsSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer()
+    main_suggestion = SuggestionSerializer()
+
+    class Meta:
+        model = Project
         fields = "__all__"

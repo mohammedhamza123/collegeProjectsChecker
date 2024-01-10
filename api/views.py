@@ -29,6 +29,7 @@ class TeacherViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response({"datum": serializer.data})
 
+
 class TeacherDetailsViewSet(viewsets.ModelViewSet):
     """
     TeacherModel View.
@@ -99,6 +100,35 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     permission_classes = (IsAuthenticated,)
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        # student = get_object_or_404(Student, user=request.user)
+        # project = student.project
+        # queryset = self.queryset.filter(id=project.id)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"datum": serializer.data})
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.calculate_progression()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+
+class ProjectDetailsViewSet(viewsets.ModelViewSet):
+    """
+    ProjectModel View.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProjectDetailsSerializer
     queryset = Project.objects.all()
 
     def list(self, request, *args, **kwargs):
