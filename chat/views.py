@@ -40,11 +40,12 @@ class ChannelViewSet(ModelViewSet):
     queryset = Channel.objects.all()
 
     def list(self, request, *args, **kwargs):
-        user = get_object_or_404(User,id=request.user)
+        user = get_object_or_404(User,id=request.user.id)
         user_group = Group.objects.filter(user=user.id).first()
         queryset = self.queryset.filter(members=request.user.id)
-        if user_group.name == "admin":
-            queryset = self.filter_queryset(self.get_queryset())
+        if user_group:
+            if user_group.name == "admin":
+                queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
