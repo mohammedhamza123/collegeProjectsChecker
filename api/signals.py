@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-from django.db.models.signals import m2m_changed, post_save
-from django.dispatch import receiver , pre_save
+from django.db.models.signals import m2m_changed, post_save ,pre_save
+from django.dispatch import receiver
 from .models import Student, Teacher
 from chat.models import Channel
 from api.models import Project
