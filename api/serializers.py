@@ -56,7 +56,7 @@ class RequirementSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailsSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer()
+    teacher = TeacherDetailsSerializer()
     main_suggestion = SuggestionSerializer()
 
     class Meta:
