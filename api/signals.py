@@ -36,7 +36,7 @@ def update_channel_members(sender, instance, **kwargs):
         # if instance.pk and instance.project != instance.__class__.objects.get(pk=instance.pk).project:
         #     # Remove the student from the previous channel's members list
         #     channel.members.remove(instance)
-        channel.members.add(instance)
+        channel.members.add(instance.user)
 
     except Channel.DoesNotExist:
         pass
