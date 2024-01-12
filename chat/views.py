@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework.response import Response , get_object_or_404
 
 from .serializers import *
+from django.contrib.auth.models import User,Group
 
 
 class MessegeViewSet(ModelViewSet):
@@ -39,7 +40,11 @@ class ChannelViewSet(ModelViewSet):
     queryset = Channel.objects.all()
 
     def list(self, request, *args, **kwargs):
+        user = get_object_or_404(User,id=request.user)
+        user_group = Group.objects.filter(user=user.id).first()
         queryset = self.queryset.filter(members=request.user.id)
+        if user_group.name == "admin":
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
