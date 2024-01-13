@@ -41,7 +41,7 @@ from api.views import (
     RequirementViewSet,
 )
 
-from chat.views import MessegeViewSet, ChannelViewSet
+from chat.views import MessegeViewSet, ChannelViewSet ,DetialedMessegeViewSet
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -72,7 +72,8 @@ router.register(r"project", ProjectViewSet, basename="project")
 router.register(r"importantDate", ImportantDateViewSet, basename="importantDate")
 router.register(r"requirement", RequirementViewSet, basename="requirement")
 router.register(r"suggestion", SuggestionViewSet, basename="suggestion")
-router.register(r"messeges", MessegeViewSet, basename="messege")
+router.register(r"messages", MessegeViewSet, basename="messege")
+router.register(r"detailedMessags", DetialedMessegeViewSet, basename="Detailedmessage")
 router.register(r"channel", ChannelViewSet, basename="channel")
 router.register(r"studentDetails", StudentDetailsViewSet, basename="studentDetails")
 router.register(r"teacherDetails", TeacherDetailsViewSet, basename="teacherDetails")

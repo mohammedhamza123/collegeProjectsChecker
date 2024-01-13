@@ -41,7 +41,41 @@ class MessegeViewSet(ModelViewSet):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"datum": serializer.data})
 
+class DetialedMessegeViewSet(ModelViewSet):
+    """
+    MessegesModel views
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = viewMesssegeSerializer
+    queryset = Messege.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        user = get_object_or_404(User, id=request.user.id)
+        user_group = Group.objects.filter(user=user.id).first()
+        channel_query = request.query_params.get("channel")
+        if channel_query:
+            queryset = self.queryset.filter(Channel=int(channel_query))
+        else:
+            if user_group:
+                if user_group.name == "admin" or user_group == "teacher":
+                    queryset = self.filter_queryset(self.get_queryset())
+                elif user_group.name == "student":
+                    student = get_object_or_404(Student, id=user.id)
+                    channel = Channel.objects.filter(project=student.project).first()
+                    if channel:
+                        queryset = self.queryset.filter(channel=channel.id)
+                    else:
+                        raise NotFound(detail="Error 404, page not found", code=404)
+            else:
+                raise NotFound(detail="Error 404, page not found", code=404)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response({"datum": serializer.data})
 
