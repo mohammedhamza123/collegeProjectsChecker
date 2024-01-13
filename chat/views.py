@@ -23,7 +23,7 @@ class MessegeViewSet(ModelViewSet):
         user_group = Group.objects.filter(user=user.id).first()
         channel_query = request.query_params.get("channel")
         if channel_query:
-            queryset = self.queryset.filter(channel=int(channel_query))
+            queryset = self.queryset.filter(Channel=int(channel_query))
         else:
             if user_group:
                 if user_group.name == "admin" or user_group == "teacher":
