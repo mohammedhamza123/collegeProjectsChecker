@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .serializers import *
 from django.contrib.auth.models import User,Group
+from api.models import Project ,Student
 
 
 class MessegeViewSet(ModelViewSet):
@@ -17,14 +18,19 @@ class MessegeViewSet(ModelViewSet):
     queryset = Messege.objects.all()
 
     def list(self, request, *args, **kwargs):
-        try:
-            channel = int(request.query_params["channel"][0])
-        except Exception:
-            queryset = []
-            serializer = self.get_serializer(queryset, many=True)
-            return Response({"datum", serializer.data})
-        queryset = self.queryset.filter(Channel=channel)
-
+        user = get_object_or_404(User,id=request.user.id)
+        user_group = Group.objects.filter(user=user.id).first()
+        channel_query = request.query_params.get('channel')
+        if channel_query:
+            queryset = self.queryset.filter(id=int(channel_query))
+        else:
+            if user_group:
+                if user_group.name == "admin" or user_group == "teacher":
+                    queryset = self.filter_queryset(self.get_queryset())
+                elif user_group.name == "student":
+                    student = get_object_or_404(Student,id=user.id)
+                    channel = Channel.objects.filter(projcet=student.project)
+                    queryset = self.queryset.filter(channel=channel.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
