@@ -31,7 +31,7 @@ class MessegeViewSet(ModelViewSet):
                     queryset = self.filter_queryset(self.get_queryset())
                 elif user_group.name == "student":
                     student = get_object_or_404(Student,id=user.id)
-                    channel = Channel.objects.filter(projcet=student.project)
+                    channel = Channel.objects.filter(project=student.project)
                     queryset = self.queryset.filter(channel=channel.id)
             else:
                 raise NotFound(detail="Error 404, page not found", code=404)
