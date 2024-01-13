@@ -18,7 +18,7 @@ class MessegeViewSet(ModelViewSet):
     queryset = Messege.objects.all()
 
     def list(self, request, *args, **kwargs):
-        user = get_object_or_404(User,id=request.user.id)
+        user = get_object_or_404(User,id=request.user)
         user_group = Group.objects.filter(user=user.id).first()
         channel_query = request.query_params.get('channel')
         if channel_query:
