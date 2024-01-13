@@ -22,7 +22,7 @@ class MessegeViewSet(ModelViewSet):
         except Exception:
             queryset = []
             serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
+            return Response({"datum", serializer.data})
         queryset = self.queryset.filter(Channel=channel)
 
         page = self.paginate_queryset(queryset)
