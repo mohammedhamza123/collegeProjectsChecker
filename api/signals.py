@@ -25,6 +25,8 @@ def add_user_to_group_on_change(
 def create_channel(sender, instance, created, **kwargs):
     if created:
         channel = Channel(project=instance)
+        if instance.teacher:
+            channel.members.add(instance.teacher)
         channel.save()
 
 @receiver(pre_save, sender=Student)
@@ -40,3 +42,16 @@ def update_channel_members(sender, instance, **kwargs):
 
     except Channel.DoesNotExist:
         pass
+
+
+@receiver(post_save, sender=Project)
+def update_channel_teacher(sender, instance, **kwargs):
+    if instance.teacher:
+        try:
+            channel = instance.channel
+            channel.members.add(instance.teacher.user)
+            channel.save()
+        except Channel.DoesNotExist:
+            pass
+            # channel = Channel()
+            # channel.save()
