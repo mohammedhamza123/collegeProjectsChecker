@@ -23,7 +23,6 @@ class MessegeViewSet(ModelViewSet):
         user_group = Group.objects.filter(user=user.id).first()
         channel_query = request.query_params.get("channel")
         if channel_query:
-            channel = get_object_or_404(Channel, id=int(channel_query), members=user.id)
             queryset = self.queryset.filter(id=int(channel_query))
         else:
             if user_group:
