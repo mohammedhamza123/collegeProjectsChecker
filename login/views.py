@@ -1,9 +1,11 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model , update_session_auth_hash
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView ,ListAPIView
 from rest_framework.views import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer,ChangePasswordSerializer
+from django.contrib.auth.models import User
+from rest_framework import generics, status
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -45,3 +47,25 @@ class MyAccountView(ListAPIView):
         return Response(serializer.data)
 
 
+class ChangePasswordView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChangePasswordSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        old_password = serializer.validated_data.get('old_password')
+        new_password = serializer.validated_data.get('new_password')
+
+        if not user.check_password(old_password):
+            return Response({'error': 'Invalid old password'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        update_session_auth_hash(request, user)
+
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)

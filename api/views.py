@@ -19,7 +19,14 @@ class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        if not request.query_params:
+            queryset = self.filter_queryset(self.get_queryset())
+        else:
+            try:
+                user = int(request.query_params.get("user"))
+                queryset = self.queryset.filter(user=user)
+            except:
+                pass
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -61,7 +68,15 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        
+        if not request.query_params:
+            queryset = self.filter_queryset(self.get_queryset())
+        else:
+            try:
+                user = int(request.query_params.get("user"))
+                queryset = self.queryset.filter(user=user)
+            except:
+                pass
 
         page = self.paginate_queryset(queryset)
         if page is not None:
