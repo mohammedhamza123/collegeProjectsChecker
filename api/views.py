@@ -176,6 +176,7 @@ class ImportantDateViewSet(viewsets.ModelViewSet):
     queryset = ImportantDate.objects.all()
 
     def list(self, request, *args, **kwargs):
+        queryset = self.queryset
         user_group = Group.objects.filter(user=request.user).first()
         if not user_group == None:
             if user_group.name == "student":
