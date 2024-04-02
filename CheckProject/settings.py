@@ -65,6 +65,11 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+AUTHENTICATION_BACKENDS = [
+    'login.custom_auth.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "College projects management api",
     "DESCRIPTION": "api for the college managment and chat application",
