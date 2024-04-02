@@ -1,8 +1,8 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-from django.db.models.signals import m2m_changed, post_save ,pre_save
+from django.db.models.signals import m2m_changed, post_save, pre_save, post_delete
 from django.dispatch import receiver
-from .models import Student, Teacher
+from .models import Student, Teacher, Requirement
 from chat.models import Channel
 from api.models import Project
 
@@ -28,6 +28,7 @@ def create_channel(sender, instance, created, **kwargs):
         if instance.teacher:
             channel.members.add(instance.teacher)
         channel.save()
+
 
 @receiver(pre_save, sender=Student)
 def update_channel_members(sender, instance, **kwargs):
@@ -55,3 +56,21 @@ def update_channel_teacher(sender, instance, **kwargs):
             pass
             # channel = Channel()
             # channel.save()
+
+
+@receiver([post_save, post_delete], sender=Requirement)
+def update_project_percentage(sender, instance, **kwargs):
+    suggestion = instance.suggestion
+    total_requirements = Requirement.objects.filter(suggestion=suggestion).count()
+    completed_requirements = Requirement.objects.filter(suggestion=suggestion, status="c").count()
+
+    if total_requirements > 0:
+        percentage = (completed_requirements / total_requirements) * 100
+    else:
+        percentage = 0
+
+    project = suggestion.project_main_suggestion
+    project.progression = percentage
+    project.save()
+
+
