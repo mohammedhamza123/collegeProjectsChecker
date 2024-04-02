@@ -65,14 +65,10 @@ def update_project_percentage(sender, instance, **kwargs):
     completed_requirements = Requirement.objects.filter(
         suggestion=suggestion, status="c"
     ).count()
-    print(instance)
-    print(suggestion)
     if total_requirements > 0:
         percentage = (completed_requirements / total_requirements) * 100
     else:
         percentage = 0
-    print(percentage)
     project = suggestion.project_main_suggestion
-    print(project)
     project.progression = percentage
     project.save()
