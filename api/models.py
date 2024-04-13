@@ -6,6 +6,7 @@ from django.conf import settings
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phoneNumber = models.IntegerField()  # 0914210840
+    isExaminer = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.user.username
@@ -13,6 +14,9 @@ class Teacher(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
+    first_grading = models.CharField(max_length=500,null=True,blank=True)
+    second_grading = models.CharField(max_length=500,null=True,blank=True)
+    teacher_grading = models.CharField(max_length=500,null=True,blank=True)
     progression = models.FloatField()
     main_suggestion = models.OneToOneField(
         "Suggestion",
