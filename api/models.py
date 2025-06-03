@@ -5,7 +5,7 @@ from django.conf import settings
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phoneNumber = models.IntegerField()  # 0914210840
+    phoneNumber = models.IntegerField()  
     isExaminer = models.BooleanField(default=False)
 
     def __str__(self) -> str:
@@ -86,7 +86,7 @@ class Suggestion(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
-    phoneNumber = models.IntegerField()  # 0914210840
+    phoneNumber = models.IntegerField(null=True)  # 0914210840
     serialNumber = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
