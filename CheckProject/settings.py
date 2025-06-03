@@ -25,7 +25,11 @@ SECRET_KEY = "django-insecure-eh3=7gva5q29^xd#v3c4z&2#64kks0#bk=856fu4yi!27t(vrc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*",
+                 "10.0.2.2",
+                 "192.168.2.129",
+                 "*"
+                 ]
 
 
 # Application definition
@@ -174,3 +178,5 @@ USER_ONLINE_TIMEOUT = 300
 # Number of seconds that we will keep track of inactive users for before
 # their last seen is removed from the cache
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
