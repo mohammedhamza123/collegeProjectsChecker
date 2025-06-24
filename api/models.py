@@ -111,3 +111,14 @@ class Requirement(models.Model):
         ("i", "incomplete"),
     )
     status = models.CharField(max_length=2, null=True, choices=STATUSES, default="i")
+
+class APIKey(models.Model):
+    key = models.CharField(max_length=40, unique=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and APIKey.objects.exists():
+            raise Exception("There can be only one APIKey instance")
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.key
