@@ -30,6 +30,7 @@ from drf_spectacular.views import (
 )
 from login.views import UserViewSet, RegisterView, MyAccountView,ChangePasswordView
 from api.views import (
+    APIKeyViewSet,
     StudentViewSet,
     StudentDetailsViewSet,
     TeacherViewSet,
@@ -79,4 +80,5 @@ router.register(r"channel", ChannelViewSet, basename="channel")
 router.register(r"studentDetails", StudentDetailsViewSet, basename="studentDetails")
 router.register(r"teacherDetails", TeacherDetailsViewSet, basename="teacherDetails")
 router.register(r"projectDetails", ProjectDetailsViewSet, basename="projectDetails")
+router.register(r"apikey", APIKeyViewSet, basename="apikey")
 urlpatterns += router.urls

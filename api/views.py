@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets , status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
 from django.contrib.auth.models import Group
@@ -252,3 +252,29 @@ class SuggestionViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response({"datum": serializer.data})
+
+
+class APIKeyViewSet(viewsets.ModelViewSet):
+    """
+    APIKey Singleton ViewSet.
+    Only allows retrieving, updating, or deleting the single APIKey instance.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = APIKeySerializer
+    queryset = APIKey.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        if APIKey.objects.exists():
+            return Response(
+                {"detail": "Only one APIKey instance allowed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().create(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        instance = APIKey.objects.first()
+        if not instance:
+            return Response({"detail": "No APIKey instance found."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
