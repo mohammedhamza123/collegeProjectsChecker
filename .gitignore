@@ -4,3 +4,12 @@ Your Project API.yaml
 db.sqlite3
 ./db.sqlite3
 /venv/
+*.json
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz

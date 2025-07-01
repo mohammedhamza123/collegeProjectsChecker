@@ -37,7 +37,7 @@ class RegisterView(CreateAPIView):
 
 class MyAccountView(ListAPIView):
     queryset = get_user_model().objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
 
     def get(self,request):

@@ -43,6 +43,8 @@ from api.views import (
 )
 
 from chat.views import MessegeViewSet, ChannelViewSet ,DetialedMessegeViewSet
+from notifications.views import NotificationViewSet
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -64,6 +66,7 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path("notifications/", include("notifications.urls")),
 ]
 
 router = DefaultRouter()
@@ -81,4 +84,5 @@ router.register(r"studentDetails", StudentDetailsViewSet, basename="studentDetai
 router.register(r"teacherDetails", TeacherDetailsViewSet, basename="teacherDetails")
 router.register(r"projectDetails", ProjectDetailsViewSet, basename="projectDetails")
 router.register(r"apikey", APIKeyViewSet, basename="apikey")
+
 urlpatterns += router.urls

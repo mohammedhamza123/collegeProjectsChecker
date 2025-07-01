@@ -88,6 +88,7 @@ class Student(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     phoneNumber = models.IntegerField(null=True)  # 0914210840
     serialNumber = models.IntegerField(null=True, blank=True)
+    is_approved = models.BooleanField(default=False)  # حالة موافقة الإدارة
 
     def __str__(self) -> str:
         return self.user.username

@@ -11,28 +11,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-eh3=7gva5q29^xd#v3c4z&2#64kks0#bk=856fu4yi!27t(vrc"
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*",
-                 "10.0.2.2",
-                 "192.168.2.129",
-                 "*"
-                 ]
-
-
-# Application definition
+ALLOWED_HOSTS = ["*", "10.0.2.2", "192.168.2.129"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,15 +27,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # global Apps
     "rest_framework",
-    # "widget_tweaks",
     "rest_framework.authtoken",
     "drf_spectacular",
-    # local Apps
     "login",
     "api",
     "chat",
+    "notifications",  # ✨ أضف تطبيق الإشعارات هنا
 ]
 
 SIMPLE_JWT = {
@@ -57,8 +41,6 @@ SIMPLE_JWT = {
 }
 
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
@@ -79,7 +61,6 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "api for the college managment and chat application",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": True,
-    # OTHER SETTINGS
 }
 
 MIDDLEWARE = [
@@ -112,20 +93,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "CheckProject.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -134,49 +107,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    # },
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    # },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "127.0.0.1:11211",
-    }
-}
-
-
-# Number of seconds of inactivity before a user is marked offline
-USER_ONLINE_TIMEOUT = 300
-
-# Number of seconds that we will keep track of inactive users for before
-# their last seen is removed from the cache
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+# ✨ إعدادات Firebase
+FIREBASE_SERVICE_ACCOUNT_KEY_PATH = str(BASE_DIR / "notifications" / "gradpro-64eee-firebase-adminsdk-fbsvc-ce6b073a51.json")

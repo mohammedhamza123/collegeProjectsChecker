@@ -21,6 +21,16 @@ class CustomAuthBackend(ModelBackend):
                 return None
 
         if user.check_password(password):
+            # Check if user is a student and if approval is required
+            try:
+                student = Student.objects.get(user=user)
+                # If student is not approved, return None (authentication fails)
+                if not student.is_approved:
+                    return None
+            except Student.DoesNotExist:
+                # User is not a student, allow authentication
+                pass
+            
             return user
 
         return None
