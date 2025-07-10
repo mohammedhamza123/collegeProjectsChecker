@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "api",
     "chat",
     "notifications",  # ✨ أضف تطبيق الإشعارات هنا
+    'corsheaders',  # Added for CORS support
 ]
 
 SIMPLE_JWT = {
@@ -64,6 +65,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Must be first for CORS
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -121,3 +123,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ✨ إعدادات Firebase
 FIREBASE_SERVICE_ACCOUNT_KEY_PATH = str(BASE_DIR / "notifications" / "gradpro-64eee-firebase-adminsdk-fbsvc-ce6b073a51.json")
+
+# CORS settings (for development only, restrict in production)
+CORS_ALLOW_ALL_ORIGINS = True

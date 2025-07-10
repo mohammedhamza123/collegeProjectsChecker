@@ -14,9 +14,9 @@ class Teacher(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
-    first_grading = models.CharField(max_length=500,null=True,blank=True)
-    second_grading = models.CharField(max_length=500,null=True,blank=True)
-    teacher_grading = models.CharField(max_length=500,null=True,blank=True)
+    first_grading = models.CharField(max_length=500, null=True, blank=True)
+    second_grading = models.CharField(max_length=500, null=True, blank=True)
+    teacher_grading = models.CharField(max_length=500, null=True, blank=True)
     progression = models.FloatField()
     main_suggestion = models.OneToOneField(
         "Suggestion",
@@ -26,7 +26,8 @@ class Project(models.Model):
         related_name="project_main_suggestion",
     )
     delivery_date = models.DateField(null=True, blank=True)
-    teacher = models.ForeignKey(Teacher,null=True,blank=True,on_delete=models.DO_NOTHING)
+    teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.DO_NOTHING)
+    final_score = models.FloatField(null=True, blank=True)  # <--- أضف هذا السطر
 
     def calculate_progression(self):
         if not self.main_suggestion or self.main_suggestion.status == "i":
