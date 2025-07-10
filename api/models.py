@@ -14,9 +14,9 @@ class Teacher(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
-    first_grading = models.CharField(max_length=500, null=True, blank=True)
-    second_grading = models.CharField(max_length=500, null=True, blank=True)
-    teacher_grading = models.CharField(max_length=500, null=True, blank=True)
+    first_grading = models.FloatField(null=True, blank=True)   # درجة الممتحن الأول
+    second_grading = models.FloatField(null=True, blank=True)  # درجة الممتحن الثاني
+    teacher_grading = models.FloatField(null=True, blank=True) # درجة المشرف
     progression = models.FloatField()
     main_suggestion = models.OneToOneField(
         "Suggestion",
@@ -27,7 +27,12 @@ class Project(models.Model):
     )
     delivery_date = models.DateField(null=True, blank=True)
     teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.DO_NOTHING)
-    final_score = models.FloatField(null=True, blank=True)  # <--- أضف هذا السطر
+    coordinator_score = models.FloatField(null=True, blank=True)         # درجة منسق المشاريع
+    department_head_score = models.FloatField(null=True, blank=True)     # درجة رئيس القسم
+    final_score = models.FloatField(null=True, blank=True)               # الدرجة النهائية (تحسب في فلاتر فقط)
+
+    def __str__(self):
+        return self.title
 
     def calculate_progression(self):
         if not self.main_suggestion or self.main_suggestion.status == "i":
