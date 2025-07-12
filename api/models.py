@@ -16,7 +16,9 @@ class Project(models.Model):
     image = models.CharField(max_length=200)
     first_grading = models.FloatField(null=True, blank=True)   # درجة الممتحن الأول
     second_grading = models.FloatField(null=True, blank=True)  # درجة الممتحن الثاني
-    teacher_grading = models.FloatField(null=True, blank=True) # درجة المشرف
+    supervisor_grade = models.FloatField(null=True, blank=True) # درجة المشرف
+    department_head_grade = models.FloatField(null=True, blank=True) # درجة رئيس القسم
+    coordinator_grade = models.FloatField(null=True, blank=True) # درجة المنسق
     progression = models.FloatField()
     main_suggestion = models.OneToOneField(
         "Suggestion",
@@ -27,9 +29,19 @@ class Project(models.Model):
     )
     delivery_date = models.DateField(null=True, blank=True)
     teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.DO_NOTHING)
-    coordinator_score = models.FloatField(null=True, blank=True)         # درجة منسق المشاريع
-    department_head_score = models.FloatField(null=True, blank=True)     # درجة رئيس القسم
-    final_score = models.FloatField(null=True, blank=True)               # الدرجة النهائية (تحسب في فلاتر فقط)
+    final_score = models.FloatField(null=True, blank=True)               # الدرجة النهائية
+    pdf_link = models.CharField(max_length=500, null=True, blank=True)   # رابط PDF
+    pdf_examiner1 = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    pdf_examiner2 = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    pdf_supervisor = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    pdf_head = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    pdf_coordinator = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    GRADED_STATUS_CHOICES = [
+        ("not_graded", "لم يتم جمع الدرجات"),
+        ("partial", "تم جمع بعض الدرجات"),
+        ("graded", "تم جمع كل الدرجات")
+    ]
+    graded_status = models.CharField(max_length=20, choices=GRADED_STATUS_CHOICES, default="not_graded")
 
     def __str__(self):
         return self.title
@@ -52,8 +64,25 @@ class Project(models.Model):
         self.save()
         return self.progression
 
-    def __str__(self) -> str:
-        return self.title
+    def calculate_final_score_and_status(self):
+        grades = [
+            self.first_grading,
+            self.second_grading,
+            self.supervisor_grade,
+            self.department_head_grade,
+            self.coordinator_grade
+        ]
+        filled_grades = [g for g in grades if g is not None]
+        if len(filled_grades) == 0:
+            self.graded_status = "not_graded"
+            self.final_score = None
+        elif len(filled_grades) < 5:
+            self.graded_status = "partial"
+            self.final_score = sum(filled_grades) / len(filled_grades) if filled_grades else None
+        else:
+            self.graded_status = "graded"
+            self.final_score = sum(filled_grades) / 5
+        self.save()
 
 
 class Suggestion(models.Model):

@@ -4,6 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
 from django.contrib.auth.models import Group
 from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Project
 
 from .serializers import *
 
@@ -176,6 +181,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.calculate_progression()
+        instance.calculate_final_score_and_status()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -205,6 +211,7 @@ class ProjectDetailsViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.calculate_progression()
+        instance.calculate_final_score_and_status()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -332,3 +339,34 @@ def reject_student(self, request, pk=None):
     student = self.get_object()
     # Implement the logic to reject the student
     return Response({"status": "Student rejected successfully"})
+
+class UploadGradePDF(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        pdf_file = request.FILES['file']
+        role = request.data.get('role')
+        grade = request.data.get('grade')
+
+        # حفظ ملف PDF في الحقل المناسب
+        if role == "examiner1":
+            project.pdf_examiner1 = pdf_file
+            project.first_grading = grade
+        elif role == "examiner2":
+            project.pdf_examiner2 = pdf_file
+            project.second_grading = grade
+        elif role == "supervisor":
+            project.pdf_supervisor = pdf_file
+            project.supervisor_grade = grade
+        elif role == "head":
+            project.pdf_head = pdf_file
+            project.department_head_grade = grade
+        elif role == "coordinator":
+            project.pdf_coordinator = pdf_file
+            project.coordinator_grade = grade
+        else:
+            return Response({"error": "دور غير معروف"}, status=status.HTTP_400_BAD_REQUEST)
+
+        project.save()
+        return Response({"success": True, "grade": grade})
