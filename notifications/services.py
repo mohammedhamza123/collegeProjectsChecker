@@ -1,3 +1,5 @@
+import os
+import json
 from firebase_admin import credentials, initialize_app, messaging
 from pathlib import Path
 from django.conf import settings
@@ -23,9 +25,25 @@ class FirebaseNotificationService:
     def initialize(self):
         if self.app is not None:
             return  # تم التهيئة مسبقًا
+        
+        # Try to get Firebase credentials from environment variable first
+        firebase_key_json = os.environ.get('FIREBASE_SERVICE_ACCOUNT_KEY')
+        
+        if firebase_key_json:
+            try:
+                # Parse JSON from environment variable
+                firebase_key_dict = json.loads(firebase_key_json)
+                cred = credentials.Certificate(firebase_key_dict)
+                self.app = initialize_app(cred)
+                logger.info("✅ Firebase initialized successfully from environment variable")
+                return
+            except (json.JSONDecodeError, Exception) as e:
+                logger.warning(f"Failed to parse Firebase key from environment: {e}")
+        
+        # Fallback to file path method
         service_account_path = getattr(settings, "FIREBASE_SERVICE_ACCOUNT_KEY_PATH", None)
         if not service_account_path:
-            raise ValueError("FIREBASE_SERVICE_ACCOUNT_KEY_PATH not set in settings.")
+            raise ValueError("FIREBASE_SERVICE_ACCOUNT_KEY_PATH not set in settings and FIREBASE_SERVICE_ACCOUNT_KEY environment variable not found.")
 
         key_path = Path(service_account_path)
         if not key_path.exists():
@@ -33,7 +51,7 @@ class FirebaseNotificationService:
 
         cred = credentials.Certificate(str(key_path))
         self.app = initialize_app(cred)
-        logger.info("✅ Firebase initialized successfully")
+        logger.info("✅ Firebase initialized successfully from file")
 
     def send_notification(self, token: str, title: str, body: str, data: dict = None):
         if self.app is None:
