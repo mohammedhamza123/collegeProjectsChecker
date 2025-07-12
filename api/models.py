@@ -30,12 +30,12 @@ class Project(models.Model):
     delivery_date = models.DateField(null=True, blank=True)
     teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.DO_NOTHING)
     final_score = models.FloatField(null=True, blank=True)               # الدرجة النهائية
-    pdf_link = models.CharField(max_length=500, null=True, blank=True)   # رابط PDF
-    pdf_examiner1 = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
-    pdf_examiner2 = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
-    pdf_supervisor = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
-    pdf_head = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
-    pdf_coordinator = models.FileField(upload_to='project_pdfs/', null=True, blank=True)
+    pdf_link = models.CharField(max_length=500, null=True, blank=True)   # رابط PDF الرئيسي للمشروع
+    pdf_examiner1 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الأول
+    pdf_examiner2 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الثاني
+    pdf_supervisor = models.CharField(max_length=500, null=True, blank=True) # رابط PDF المشرف
+    pdf_head = models.CharField(max_length=500, null=True, blank=True)       # رابط PDF رئيس القسم
+    pdf_coordinator = models.CharField(max_length=500, null=True, blank=True) # رابط PDF المنسق
     GRADED_STATUS_CHOICES = [
         ("not_graded", "لم يتم جمع الدرجات"),
         ("partial", "تم جمع بعض الدرجات"),
