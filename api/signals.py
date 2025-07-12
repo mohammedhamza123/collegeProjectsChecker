@@ -28,7 +28,7 @@ def delete_user_on_student_delete(sender, instance, **kwargs):
         user = instance.user
         # حذف المستخدم من مجموعة الطلاب
         try:
-            students_group = Group.objects.get(name='students')
+            students_group = Group.objects.get(name='student')
             user.groups.remove(students_group)
         except Group.DoesNotExist:
             pass
