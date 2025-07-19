@@ -34,8 +34,6 @@ class Project(models.Model):
     pdf_examiner1 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الأول
     pdf_examiner2 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الثاني
     pdf_supervisor = models.CharField(max_length=500, null=True, blank=True) # رابط PDF المشرف
-    pdf_head = models.CharField(max_length=500, null=True, blank=True)       # رابط PDF رئيس القسم
-    pdf_coordinator = models.CharField(max_length=500, null=True, blank=True) # رابط PDF المنسق
     final_score = models.FloatField(null=True, blank=True)  # الدرجة النهائية للمشروع
     GRADED_STATUS_CHOICES = [
         ("not_graded", "لم يتم جمع الدرجات"),
