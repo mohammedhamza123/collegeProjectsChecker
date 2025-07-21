@@ -5,20 +5,26 @@ from django.conf import settings
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phoneNumber = models.IntegerField()  
+    phoneNumber = models.IntegerField()
     isExaminer = models.BooleanField(default=False)
+    examined_projects = models.ManyToManyField(
+            "Project",
+            related_name="examiners",
+            blank=True
+        )
 
     def __str__(self) -> str:
         return self.user.username
 
+
 class Project(models.Model):
     title = models.CharField(max_length=70)
     image = models.CharField(max_length=200)
-    first_grading = models.FloatField(null=True, blank=True)   # درجة الممتحن الأول
+    first_grading = models.FloatField(null=True, blank=True)  # درجة الممتحن الأول
     second_grading = models.FloatField(null=True, blank=True)  # درجة الممتحن الثاني
-    supervisor_grade = models.FloatField(null=True, blank=True) # درجة المشرف
-    department_head_grade = models.FloatField(null=True, blank=True) # درجة رئيس القسم
-    coordinator_grade = models.FloatField(null=True, blank=True) # درجة المنسق
+    supervisor_grade = models.FloatField(null=True, blank=True)  # درجة المشرف
+    department_head_grade = models.FloatField(null=True, blank=True)  # درجة رئيس القسم
+    coordinator_grade = models.FloatField(null=True, blank=True)  # درجة المنسق
     progression = models.FloatField()
     main_suggestion = models.OneToOneField(
         "Suggestion",
@@ -28,19 +34,31 @@ class Project(models.Model):
         related_name="project_main_suggestion",
     )
     delivery_date = models.DateField(null=True, blank=True)
-    teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.DO_NOTHING)
-    final_score = models.FloatField(null=True, blank=True)               # الدرجة النهائية
-    pdf_link = models.CharField(max_length=500, null=True, blank=True)   # رابط PDF الرئيسي للمشروع
-    pdf_examiner1 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الأول
-    pdf_examiner2 = models.CharField(max_length=500, null=True, blank=True)  # رابط PDF الممتحن الثاني
-    pdf_supervisor = models.CharField(max_length=500, null=True, blank=True) # رابط PDF المشرف
+    teacher = models.ForeignKey(
+        Teacher, null=True, blank=True, on_delete=models.DO_NOTHING
+    )
+    final_score = models.FloatField(null=True, blank=True)  # الدرجة النهائية
+    pdf_link = models.CharField(
+        max_length=500, null=True, blank=True
+    )  # رابط PDF الرئيسي للمشروع
+    pdf_examiner1 = models.CharField(
+        max_length=500, null=True, blank=True
+    )  # رابط PDF الممتحن الأول
+    pdf_examiner2 = models.CharField(
+        max_length=500, null=True, blank=True
+    )  # رابط PDF الممتحن الثاني
+    pdf_supervisor = models.CharField(
+        max_length=500, null=True, blank=True
+    )  # رابط PDF المشرف
     final_score = models.FloatField(null=True, blank=True)  # الدرجة النهائية للمشروع
     GRADED_STATUS_CHOICES = [
         ("not_graded", "لم يتم جمع الدرجات"),
         ("partial", "تم جمع بعض الدرجات"),
-        ("graded", "تم جمع كل الدرجات")
+        ("graded", "تم جمع كل الدرجات"),
     ]
-    graded_status = models.CharField(max_length=20, choices=GRADED_STATUS_CHOICES, default="not_graded")
+    graded_status = models.CharField(
+        max_length=20, choices=GRADED_STATUS_CHOICES, default="not_graded"
+    )
 
     def __str__(self):
         return self.title
@@ -69,7 +87,7 @@ class Project(models.Model):
             self.second_grading,
             self.supervisor_grade,
             self.department_head_grade,
-            self.coordinator_grade
+            self.coordinator_grade,
         ]
         filled_grades = [g for g in grades if g is not None]
         if len(filled_grades) == 0:
@@ -77,7 +95,9 @@ class Project(models.Model):
             self.final_score = None
         elif len(filled_grades) < 5:
             self.graded_status = "partial"
-            self.final_score = sum(filled_grades) / len(filled_grades) if filled_grades else None
+            self.final_score = (
+                sum(filled_grades) / len(filled_grades) if filled_grades else None
+            )
         else:
             self.graded_status = "graded"
             self.final_score = sum(filled_grades) / 5
@@ -119,13 +139,16 @@ class Suggestion(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
+    project = models.ForeignKey(
+        Project, on_delete=models.SET_NULL, null=True, blank=True
+    )
     phoneNumber = models.IntegerField(null=True)  # 0914210840
     serialNumber = models.IntegerField(null=True, blank=True)
     is_approved = models.BooleanField(default=False)  # حالة موافقة الإدارة
 
     def __str__(self) -> str:
         return self.user.username
+
 
 class ImportantDate(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -147,9 +170,10 @@ class Requirement(models.Model):
     )
     status = models.CharField(max_length=2, null=True, choices=STATUSES, default="i")
 
+
 class APIKey(models.Model):
     key = models.CharField(max_length=40, unique=True)
-    
+
     def save(self, *args, **kwargs):
         if not self.pk and APIKey.objects.exists():
             raise Exception("There can be only one APIKey instance")
