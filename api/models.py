@@ -8,10 +8,8 @@ class Teacher(models.Model):
     phoneNumber = models.IntegerField()
     isExaminer = models.BooleanField(default=False)
     examined_projects = models.ManyToManyField(
-            "Project",
-            related_name="examiners",
-            blank=True
-        )
+        "Project", related_name="examiners", blank=True
+    )
 
     def __str__(self) -> str:
         return self.user.username
@@ -81,7 +79,8 @@ class Project(models.Model):
         self.save()
         return self.progression
 
-    def calculate_final_score_and_status(self):
+    def _calculate_and_set_fields(self):
+        """Calculates final score and status and sets them on the instance, but does NOT save."""
         grades = [
             self.first_grading,
             self.second_grading,
@@ -90,18 +89,25 @@ class Project(models.Model):
             self.coordinator_grade,
         ]
         filled_grades = [g for g in grades if g is not None]
-        if len(filled_grades) == 0:
+        if not filled_grades:
             self.graded_status = "not_graded"
             self.final_score = None
         elif len(filled_grades) < 5:
             self.graded_status = "partial"
-            self.final_score = (
-                sum(filled_grades) / len(filled_grades) if filled_grades else None
-            )
+            self.final_score = None
         else:
             self.graded_status = "graded"
-            self.final_score = sum(filled_grades) / 5
+            self.final_score = (
+                sum(filled_grades) / 5
+            )  # Example: (25+25+40+0+0) / 5 = 18
+
+    def calculate_final_score_and_status(self):
+        self._calculate_and_set_fields()
         self.save()
+
+    def save(self, *args, **kwargs):
+        self._calculate_and_set_fields()
+        super(Project, self).save(*args, **kwargs)
 
 
 class Suggestion(models.Model):
