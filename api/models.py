@@ -97,9 +97,7 @@ class Project(models.Model):
             self.final_score = None
         else:
             self.graded_status = "graded"
-            self.final_score = (
-                sum(filled_grades) / 5
-            )  # Example: (25+25+40+0+0) / 5 = 18
+            self.final_score = sum(filled_grades)
 
     def calculate_final_score_and_status(self):
         self._calculate_and_set_fields()
